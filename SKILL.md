@@ -98,6 +98,34 @@ When a `[STASH]` system message arrives (webhook fired):
 6. Keep it casual, useful, not annoying
 7. If clearly just a quick bookmark with no depth, one line is enough
 
+## Local Sync
+
+Sync your stash as `.md` files so your agent can search content locally without API calls.
+
+```bash
+scripts/stash-sync.sh [output-dir] [after-date]
+```
+
+Examples:
+- `scripts/stash-sync.sh` — full sync to `./stash/`
+- `scripts/stash-sync.sh ~/stash` — sync to custom dir
+- `scripts/stash-sync.sh ./stash 2026-02-01` — incremental sync (Plus+ plans)
+
+Files are saved with YAML frontmatter (title, url, source, tags) and full markdown content. Directory structure mirrors the source:
+```
+stash/
+├── web/     — articles, blogs
+├── x/       — tweets/threads
+└── youtube/ — videos
+```
+
+When handling a `[STASH]` webhook, after commenting, also run sync to keep local files current:
+```bash
+scripts/stash-sync.sh <workspace>/stash
+```
+
+This lets you search stash content locally (grep, semantic search) without hitting the API.
+
 ## CLI Reference
 
 The `scripts/stash.sh` wrapper supports all StashThis API operations:
@@ -112,5 +140,6 @@ The `scripts/stash.sh` wrapper supports all StashThis API operations:
 | `stash.sh delete <id>` | Delete an item |
 | `stash.sh tags <id> <tags> [replace]` | Add/replace tags |
 | `stash.sh corpus [limit] [offset] [after]` | Export full markdown content |
+| `stash-sync.sh [dir] [after]` | Sync stash as local `.md` files |
 
 For full API details, see `references/api.md`.
